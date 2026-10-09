@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -12,10 +13,13 @@ async function VenueList() {
   }
 
   return (
-    <ul className="mt-4 space-y-2">
-      {venues.map((v) => (
+    <ul>
+      {(venues ?? []).map((v) => (
         <li key={v.id}>
-          {v.name} ({v.category}) in {v.area}
+          <Link href={`/v/${v.slug}`} className="underline">
+            {v.name}
+          </Link>{" "}
+          ({v.category}) in {v.area}
         </li>
       ))}
     </ul>
