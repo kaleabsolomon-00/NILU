@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getVenueByQrToken } from "@/lib/queries/qr";
+import ReviewForm from "./review-form";
+import { getTags } from "@/lib/queries/tags";
 
 export const metadata: Metadata = {
   title: "Rate your visit | NILU",
@@ -12,7 +14,10 @@ type Props = { params: Promise<{ token: string }> };
 
 async function ReviewGate({ params }: Props) {
   const { token } = await params;
-  const venue = await getVenueByQrToken(token);
+  const [venue, tags] = await Promise.all([
+    getVenueByQrToken(token),
+    getTags(),
+  ]);
 
   if (!venue) notFound();
 
@@ -20,7 +25,7 @@ async function ReviewGate({ params }: Props) {
     <>
       <p className="text-sm text-gray-500">You are rating</p>
       <h1 className="text-3xl font-bold">{venue.name}</h1>
-      <p className="mt-6 text-gray-500">The review form goes here next.</p>
+      <ReviewForm token={token} venueSlug={venue.slug} tags={tags} />
     </>
   );
 }
