@@ -33,7 +33,8 @@ async function ReviewGate({ params }: Props) {
 }
 export default function ReviewPage({ params }: Props) {
   return (
-    <main className="mx-auto max-w-md p-6">
+    <main className="mx-auto max-w-md p-6 md:my-12 md:rounded-3xl md:border-2 md:border-soft md:p-10">
+      {" "}
       <Suspense fallback={<p>Loading...</p>}>
         <ReviewGate params={params} />
       </Suspense>

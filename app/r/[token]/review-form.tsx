@@ -73,10 +73,10 @@ export default function ReviewForm({
   }
 
   return (
-    <form action={formAction} className="mt-8 pb-32">
+    <form action={formAction} className="mt-8 pb-32 md:pb-0">
+      {" "}
       <input type="hidden" name="token" value={token} />
       <input type="hidden" name="rating" value={rating} />
-
       <p className="text-center font-medium">How was your visit?</p>
       <div className="mt-4 flex justify-center gap-2">
         {[1, 2, 3, 4, 5].map((n) => (
@@ -97,7 +97,6 @@ export default function ReviewForm({
       <p className="mt-2 h-6 text-center font-medium text-brand">
         {rating > 0 ? RATING_LABELS[rating - 1] : "Tap a star"}
       </p>
-
       {sentiment && (
         <div className="mt-8">
           <p className="text-center font-medium">
@@ -129,7 +128,6 @@ export default function ReviewForm({
           </div>
         </div>
       )}
-
       <div className="mt-8">
         <label htmlFor="comment" className="sr-only">
           Comment (optional)
@@ -148,13 +146,11 @@ export default function ReviewForm({
           Posted without your name.
         </p>
       </div>
-
       {state.status === "error" && (
         <p role="alert" className="mt-4 text-center font-medium text-red-700">
           {state.message}
         </p>
       )}
-
       <div className="fixed inset-x-0 bottom-0 bg-background/90 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur">
         <button
           type="submit"
