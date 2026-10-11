@@ -23,13 +23,14 @@ async function ReviewGate({ params }: Props) {
 
   return (
     <>
-      <p className="text-sm text-gray-500">You are rating</p>
-      <h1 className="text-3xl font-bold">{venue.name}</h1>
+      <p className="text-center text-sm text-ink/70">You are rating</p>
+      <h1 className="text-center text-3xl font-bold text-brand">
+        {venue.name}
+      </h1>
       <ReviewForm token={token} venueSlug={venue.slug} tags={tags} />
     </>
   );
 }
-
 export default function ReviewPage({ params }: Props) {
   return (
     <main className="mx-auto max-w-md p-6">

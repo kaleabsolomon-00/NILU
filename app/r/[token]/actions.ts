@@ -1,5 +1,5 @@
 "use server";
-
+import { tagSentimentForRating } from "@/lib/rating";
 import { cookies } from "next/headers";
 import { createHmac, randomUUID } from "crypto";
 import { supabaseAdmin } from "@/lib/supabase-admin";
@@ -37,6 +37,26 @@ export async function submitReview(
   const venue = await getVenueByQrToken(token);
   if (!venue) {
     return { status: "error", message: "This QR code is not valid." };
+  }
+  // 2b. Tags must exist and must match the rating
+  if (tagIds.length > 0) {
+    const { data: tagRows, error: tagLookupError } = await supabaseAdmin
+      .from("tags")
+      .select("id, sentiment")
+      .in("id", tagIds);
+
+    const expected = tagSentimentForRating(rating);
+    if (
+      tagLookupError ||
+      !tagRows ||
+      tagRows.length !== tagIds.length ||
+      tagRows.some((t) => t.sentiment !== expected)
+    ) {
+      return {
+        status: "error",
+        message: "Those tags don't match your rating. Please try again.",
+      };
+    }
   }
 
   // 3. Identify the device (cookie), then hash it

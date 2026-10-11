@@ -3,8 +3,13 @@
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import { submitReview, type ReviewState } from "./actions";
+import {
+  RATING_LABELS,
+  tagSentimentForRating,
+  type TagSentiment,
+} from "@/lib/rating";
 
-type Tag = { id: number; label: string };
+type Tag = { id: number; label: string; sentiment: TagSentiment };
 
 const initialState: ReviewState = { status: "idle" };
 
@@ -25,6 +30,22 @@ export default function ReviewForm({
   const [comment, setComment] = useState("");
   const [selected, setSelected] = useState<number[]>([]);
 
+  const sentiment = rating > 0 ? tagSentimentForRating(rating) : null;
+  const visibleTags = sentiment
+    ? tags.filter((t) => t.sentiment === sentiment)
+    : [];
+
+  function chooseRating(n: number) {
+    // Moving between the "liked" and "improve" groups makes earlier picks invalid
+    if (
+      rating > 0 &&
+      tagSentimentForRating(n) !== tagSentimentForRating(rating)
+    ) {
+      setSelected([]);
+    }
+    setRating(n);
+  }
+
   function toggleTag(id: number) {
     setSelected((cur) =>
       cur.includes(id)
@@ -37,10 +58,14 @@ export default function ReviewForm({
 
   if (state.status === "success") {
     return (
-      <div className="mt-6">
-        <h2 className="text-xl font-semibold">Thank you!</h2>
+      <div className="mt-12 text-center">
+        <p className="text-5xl text-accent">★</p>
+        <h2 className="mt-4 text-2xl font-bold text-brand">Thank you!</h2>
         <p className="mt-2">Your review has been posted.</p>
-        <Link href={`/v/${venueSlug}`} className="mt-4 inline-block underline">
+        <Link
+          href={`/v/${venueSlug}`}
+          className="mt-6 inline-block font-medium text-brand underline"
+        >
           See the venue page
         </Link>
       </div>
@@ -48,54 +73,65 @@ export default function ReviewForm({
   }
 
   return (
-    <form action={formAction} className="mt-6 space-y-6">
+    <form action={formAction} className="mt-8 pb-32">
       <input type="hidden" name="token" value={token} />
       <input type="hidden" name="rating" value={rating} />
 
-      <div>
-        <p className="font-medium">How was your visit?</p>
-        <div className="mt-2 flex gap-1">
-          {[1, 2, 3, 4, 5].map((n) => (
-            <button
-              key={n}
-              type="button"
-              onClick={() => setRating(n)}
-              aria-label={`${n} star${n > 1 ? "s" : ""}`}
-              aria-pressed={rating === n}
-              className={`text-4xl ${n <= rating ? "text-yellow-500" : "text-gray-300"}`}
-            >
-              ★
-            </button>
-          ))}
-        </div>
+      <p className="text-center font-medium">How was your visit?</p>
+      <div className="mt-4 flex justify-center gap-2">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <button
+            key={n}
+            type="button"
+            onClick={() => chooseRating(n)}
+            aria-label={`${n} star${n > 1 ? "s" : ""}`}
+            aria-pressed={n === rating}
+            className={`flex h-12 w-12 items-center justify-center rounded-full text-2xl text-background transition ${
+              n <= rating ? "bg-accent" : "bg-soft"
+            }`}
+          >
+            ★
+          </button>
+        ))}
       </div>
+      <p className="mt-2 h-6 text-center font-medium text-brand">
+        {rating > 0 ? RATING_LABELS[rating - 1] : "Tap a star"}
+      </p>
 
-      <div>
-        <p className="font-medium">What was it good for? (optional)</p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {tags.map((t) => (
-            <label
-              key={t.id}
-              className={`cursor-pointer rounded-full border px-3 py-1 text-sm ${
-                selected.includes(t.id) ? "bg-black text-white" : ""
-              }`}
-            >
-              <input
-                type="checkbox"
-                name="tags"
-                value={t.id}
-                checked={selected.includes(t.id)}
-                onChange={() => toggleTag(t.id)}
-                className="sr-only"
-              />
-              {t.label}
-            </label>
-          ))}
+      {sentiment && (
+        <div className="mt-8">
+          <p className="text-center font-medium">
+            {sentiment === "positive"
+              ? "What did you like?"
+              : "What can we improve?"}
+          </p>
+          <div className="mt-3 flex flex-wrap justify-center gap-2">
+            {visibleTags.map((t) => (
+              <label
+                key={t.id}
+                className={`cursor-pointer rounded-full border-2 px-4 py-1.5 text-sm transition ${
+                  selected.includes(t.id)
+                    ? "border-brand bg-brand text-background"
+                    : "border-soft"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  name="tags"
+                  value={t.id}
+                  checked={selected.includes(t.id)}
+                  onChange={() => toggleTag(t.id)}
+                  className="sr-only"
+                />
+                {t.label}
+              </label>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      <div>
-        <label htmlFor="comment" className="font-medium">
+      <div className="mt-8">
+        <label htmlFor="comment" className="sr-only">
           Comment (optional)
         </label>
         <textarea
@@ -105,23 +141,29 @@ export default function ReviewForm({
           onChange={(e) => setComment(e.target.value)}
           maxLength={1000}
           rows={4}
-          className="mt-2 w-full rounded border p-2"
+          placeholder="Add a comment (optional)"
+          className="w-full rounded-2xl border-2 border-soft bg-transparent p-3 placeholder:text-ink/50 focus:border-brand focus:outline-none"
         />
+        <p className="mt-2 text-center text-sm text-ink/60">
+          Posted without your name.
+        </p>
       </div>
 
       {state.status === "error" && (
-        <p role="alert" className="text-red-600">
+        <p role="alert" className="mt-4 text-center font-medium text-red-700">
           {state.message}
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={pending || rating === 0}
-        className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
-      >
-        {pending ? "Submitting..." : "Submit review"}
-      </button>
+      <div className="fixed inset-x-0 bottom-0 bg-background/90 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur">
+        <button
+          type="submit"
+          disabled={pending || rating === 0}
+          className="mx-auto block w-full max-w-md rounded-full bg-brand py-3 text-lg font-semibold text-background disabled:opacity-40"
+        >
+          {pending ? "Submitting..." : "Submit review"}
+        </button>
+      </div>
     </form>
   );
 }
