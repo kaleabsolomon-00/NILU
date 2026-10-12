@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getVenueBySlug } from "@/lib/queries/venues";
-import { getVenueReviews, getReviewStats } from "@/lib/queries/reviews";
+import { getVenueReviews, getVenueRating } from "@/lib/queries/reviews";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -23,7 +23,7 @@ async function VenueDetails({ params }: Props) {
 
   const [reviews, stats] = await Promise.all([
     getVenueReviews(venue.id),
-    getReviewStats(venue.id),
+    getVenueRating(venue.id),
   ]);
 
   return (

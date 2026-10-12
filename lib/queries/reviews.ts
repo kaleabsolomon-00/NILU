@@ -21,16 +21,19 @@ export async function getVenueReviews(venueId: string, limit = 20) {
   return (data ?? []) as unknown as VenueReview[];
 }
 
-// Temporary: a simple average. Step 5 replaces this with a proper weighted score.
-export async function getReviewStats(venueId: string) {
+// to calculate a real weighted rating score
+
+export async function getVenueRating(venueId: string) {
   const { data, error } = await supabase
-    .from("reviews")
-    .select("rating")
-    .eq("venue_id", venueId);
+    .from("venue_ratings")
+    .select("review_count, average_rating, score")
+    .eq("venue_id", venueId)
+    .maybeSingle();
 
   if (error) throw new Error(error.message);
-  const count = data.length;
-  const average =
-    count === 0 ? 0 : data.reduce((sum, r) => sum + r.rating, 0) / count;
-  return { count, average };
+  return {
+    count: Number(data?.review_count ?? 0),
+    average: Number(data?.average_rating ?? 0),
+    score: Number(data?.score ?? 0),
+  };
 }
