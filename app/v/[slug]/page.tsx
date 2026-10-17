@@ -2,6 +2,9 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getVenueBySlug } from "@/lib/queries/venues";
 import { getVenueReviews, getVenueRating } from "@/lib/queries/reviews";
+import { getVenuePhotoPaths } from "@/lib/queries/photos";
+import { categoryLabel } from "@/lib/categories";
+import VenueCover from "@/components/venue-cover";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -21,23 +24,67 @@ async function VenueDetails({ params }: Props) {
 
   if (!venue) notFound();
 
-  const [reviews, stats] = await Promise.all([
+  const [reviews, stats, photoPaths] = await Promise.all([
     getVenueReviews(venue.id),
     getVenueRating(venue.id),
+    getVenuePhotoPaths(venue.id),
   ]);
+  const [cover, ...others] = photoPaths;
 
   return (
     <>
-      <h1 className="text-3xl font-bold text-brand">{venue.name}</h1>
+      <div className="relative aspect-[16/9] overflow-hidden rounded-3xl">
+        <VenueCover
+          path={cover ?? null}
+          name={venue.name}
+          sizes="(min-width: 768px) 624px, 100vw"
+          hero
+        />
+      </div>
+
+      {others.length > 0 && (
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          {others.map((path) => (
+            <div
+              key={path}
+              className="relative aspect-[4/3] overflow-hidden rounded-2xl"
+            >
+              <VenueCover
+                path={path}
+                name={venue.name}
+                sizes="(min-width: 768px) 312px, 50vw"
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
+      <h1 className="mt-6 text-3xl font-bold text-brand">{venue.name}</h1>
       <p className="mt-1 text-sm text-ink/60">
-        {venue.category.replace("_", " ")}
+        {categoryLabel(venue.category)}
         {venue.area ? ` · ${venue.area}` : ""}
       </p>
       {venue.description && <p className="mt-4">{venue.description}</p>}
-      {venue.address && <p className="mt-2 text-sm">{venue.address}</p>}
+
+      {(venue.address || venue.opening_hours) && (
+        <div className="mt-4 space-y-3 rounded-2xl border-2 border-soft p-4 text-sm">
+          {venue.address && (
+            <div>
+              <p className="font-semibold text-brand">Address</p>
+              <p>{venue.address}</p>
+            </div>
+          )}
+          {venue.opening_hours && (
+            <div>
+              <p className="font-semibold text-brand">Opening hours</p>
+              <p className="whitespace-pre-line">{venue.opening_hours}</p>
+            </div>
+          )}
+        </div>
+      )}
 
       <section className="mt-8">
-        <h2 className="text-xl font-semibold text-brand ">Reviews</h2>
+        <h2 className="text-xl font-semibold text-brand">Reviews</h2>
 
         {stats.count > 0 ? (
           <p className="mt-2 flex items-center gap-2">

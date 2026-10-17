@@ -10,6 +10,7 @@ export type VenueCard = {
   average_rating: number;
   score: number;
   tag_slugs: string[];
+  cover_path: string | null;
 };
 
 export async function getVenueCards({
@@ -21,14 +22,12 @@ export async function getVenueCards({
 }) {
   let query = supabase
     .from("venue_cards")
-    .select(
-      "id, slug, name, category, area, review_count, average_rating, score, tag_slugs",
-    )
+    .select("id, slug, name, category, area, review_count, average_rating, score, tag_slugs, cover_path")
     .order("score", { ascending: false })
     .order("review_count", { ascending: false })
     .limit(50);
 
-  if (category) query = query.eq("category", category);
+  if (category) query = query.eq("category", category); 
   if (tag) query = query.contains("tag_slugs", [tag]);
 
   const { data, error } = await query;
