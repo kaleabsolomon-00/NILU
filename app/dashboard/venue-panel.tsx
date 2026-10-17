@@ -58,12 +58,14 @@ export default async function VenuePanel({
           <h2 className="text-2xl font-bold text-brand">{venue.name}</h2>
           <p className="text-sm text-ink/60">{categoryLabel(venue.category)}</p>
         </div>
-        <Link
-          href={`/v/${venue.slug}`}
-          className="text-sm font-medium text-brand underline"
-        >
-          View public page
-        </Link>
+        <div className="flex gap-4 text-sm font-medium text-brand">
+          <Link href={`/dashboard/venues/${venue.id}`} className="underline">
+            Edit details &amp; photos
+          </Link>
+          <Link href={`/v/${venue.slug}`} className="underline">
+            View public page
+          </Link>
+        </div>
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4">

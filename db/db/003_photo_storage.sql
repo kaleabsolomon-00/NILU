@@ -10,7 +10,7 @@ create policy "Owners upload venue photos" on storage.objects
     bucket_id = 'venue-photos'
     and exists (
       select 1 from public.venues v
-      where v.id::text = (storage.foldername(name))[1]
+      where v.id::text = (storage.foldername(storage.objects.name))[1]
         and v.owner_id = auth.uid()
     )
   );
@@ -21,7 +21,7 @@ create policy "Owners delete venue photos" on storage.objects
     bucket_id = 'venue-photos'
     and exists (
       select 1 from public.venues v
-      where v.id::text = (storage.foldername(name))[1]
+      where v.id::text = (storage.foldername(storage.objects.name))[1]
         and v.owner_id = auth.uid()
     )
   );
