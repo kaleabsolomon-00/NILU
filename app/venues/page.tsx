@@ -1,11 +1,12 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import Form from "next/form";
 import { getVenueCards } from "@/lib/queries/discover";
 import { getTags } from "@/lib/queries/tags";
 import { CATEGORIES, categoryLabel } from "@/lib/categories";
 import VenueCover from "@/components/venue-cover";
 
-type Filters = { category?: string; tag?: string };
+type Filters = { category?: string; tag?: string; q?: string };
 type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
@@ -14,10 +15,11 @@ function first(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
 
-// Builds a link to the same page with one filter changed
-function buildHref(current: Filters, change: Filters) {
+// Builds a link to the same page with one thing changed
+function buildHref(current: Filters, change: Partial<Filters>) {
   const next = { ...current, ...change };
   const params = new URLSearchParams();
+  if (next.q) params.set("q", next.q);
   if (next.category) params.set("category", next.category);
   if (next.tag) params.set("tag", next.tag);
   const qs = params.toString();
@@ -35,21 +37,48 @@ async function Discovery({ searchParams }: Props) {
   const params = await searchParams;
   const tags = (await getTags()).filter((t) => t.sentiment === "positive");
 
-  // Ignore any filter value we don't recognise
+  // Ignore any value we don't recognise, and tidy the search text
   const rawCategory = first(params.category);
   const rawTag = first(params.tag);
+  const rawQuery = (first(params.q) ?? "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 60);
+
   const category = CATEGORIES.some((c) => c.value === rawCategory)
     ? rawCategory
     : undefined;
   const tag = tags.some((t) => t.slug === rawTag) ? rawTag : undefined;
-  const current: Filters = { category, tag };
+  const q = rawQuery || undefined;
+  const current: Filters = { category, tag, q };
 
   const venues = await getVenueCards(current);
   const tagLabels = new Map(tags.map((t) => [t.slug, t.label]));
 
   return (
     <>
-      <div className="mt-6 space-y-3">
+      <Form action="/venues" className="mt-6 flex gap-2">
+        {category && <input type="hidden" name="category" value={category} />}
+        {tag && <input type="hidden" name="tag" value={tag} />}
+        <input
+          key={q ?? ""}
+          type="search"
+          name="q"
+          defaultValue={q}
+          placeholder="Search by name"
+          aria-label="Search places by name"
+          maxLength={60}
+          className="min-w-0 flex-1 rounded-full border-2 border-soft bg-transparent px-4 py-2 focus:border-brand focus:outline-none"
+        />
+        <button
+          type="submit"
+          className="rounded-full bg-brand px-5 py-2 font-semibold text-background"
+        >
+          Search
+        </button>
+      </Form>
+
+      <div className="mt-4 space-y-3">
         <div className="flex flex-wrap gap-2">
           <Link
             href={buildHref(current, { category: undefined })}
@@ -89,11 +118,24 @@ async function Discovery({ searchParams }: Props) {
 
       <p className="mt-6 text-sm text-ink/60">
         {venues.length} place{venues.length === 1 ? "" : "s"}
+        {q ? ` matching “${q}”` : ""}
+        {q && (
+          <>
+            {" · "}
+            <Link
+              href={buildHref(current, { q: undefined })}
+              scroll={false}
+              className="font-medium text-brand underline"
+            >
+              Clear search
+            </Link>
+          </>
+        )}
       </p>
 
       {venues.length === 0 ? (
         <p className="mt-4">
-          No places match these filters yet.{" "}
+          No places match {q ? `“${q}”` : "these filters"} yet.{" "}
           <Link href="/venues" className="font-medium text-brand underline">
             Clear filters
           </Link>

@@ -16,19 +16,28 @@ export type VenueCard = {
 export async function getVenueCards({
   category,
   tag,
+  q,
 }: {
   category?: string;
   tag?: string;
+  q?: string;
 }) {
   let query = supabase
     .from("venue_cards")
-    .select("id, slug, name, category, area, review_count, average_rating, score, tag_slugs, cover_path")
+    .select(
+      "id, slug, name, category, area, review_count, average_rating, score, tag_slugs, cover_path",
+    )
     .order("score", { ascending: false })
     .order("review_count", { ascending: false })
     .limit(50);
 
-  if (category) query = query.eq("category", category); 
+  if (category) query = query.eq("category", category);
   if (tag) query = query.contains("tag_slugs", [tag]);
+  if (q) {
+    // Escape LIKE wildcards so typing % or _ can't match everything
+    const escaped = q.replace(/[\\%_]/g, "\\$&");
+    query = query.ilike("name", `%${escaped}%`);
+  }
 
   const { data, error } = await query;
   if (error) throw new Error(error.message);

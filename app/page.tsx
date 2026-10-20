@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Form from "next/form";
 
 export default function Home() {
   return (
@@ -8,11 +9,26 @@ export default function Home() {
         Discover the best-rated places to spend your time, reviewed by people
         who were really there.
       </p>
-      <Link
-        href="/venues"
-        className="mt-8 rounded-full bg-brand px-8 py-3 text-lg font-semibold text-background"
-      >
-        Explore places
+
+      <Form action="/venues" className="mt-8 flex w-full max-w-md gap-2">
+        <input
+          type="search"
+          name="q"
+          placeholder="Search for a place"
+          aria-label="Search places by name"
+          maxLength={60}
+          className="min-w-0 flex-1 rounded-full border-2 border-soft bg-transparent px-5 py-3 focus:border-brand focus:outline-none"
+        />
+        <button
+          type="submit"
+          className="rounded-full bg-brand px-6 py-3 font-semibold text-background"
+        >
+          Search
+        </button>
+      </Form>
+
+      <Link href="/venues" className="mt-6 font-medium text-brand underline">
+        or browse all places
       </Link>
     </main>
   );
