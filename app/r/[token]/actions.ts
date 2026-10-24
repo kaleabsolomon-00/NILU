@@ -1,15 +1,19 @@
 "use server";
 import { tagSentimentForRating } from "@/lib/rating";
 import { cookies } from "next/headers";
-import { createHmac, randomUUID } from "crypto";
+import { randomUUID } from "crypto";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { getVenueByQrToken } from "@/lib/queries/qr";
+import { DEVICE_COOKIE, hashDeviceId } from "@/lib/device";
 
+//shows an already reviewed error if the same device tries to review the same venue on the same day
 export type ReviewState = {
   status: "idle" | "success" | "error";
   message?: string;
+  code?: "already_reviewed";
 };
 
+//submits a review to the database, returns a ReviewState object with status and message
 export async function submitReview(
   _prev: ReviewState,
   formData: FormData,
@@ -61,19 +65,17 @@ export async function submitReview(
 
   // 3. Identify the device (cookie), then hash it
   const jar = await cookies();
-  let deviceId = jar.get("nilu_device")?.value;
+  let deviceId = jar.get(DEVICE_COOKIE)?.value;
   if (!deviceId) {
     deviceId = randomUUID();
-    jar.set("nilu_device", deviceId, {
+    jar.set(DEVICE_COOKIE, deviceId, {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24 * 365,
     });
   }
-  const deviceHash = createHmac("sha256", process.env.DEVICE_HASH_SECRET!)
-    .update(deviceId)
-    .digest("hex");
+  const deviceHash = hashDeviceId(deviceId);
 
   // 4. Save the review
   const { data: review, error } = await supabaseAdmin
@@ -92,8 +94,8 @@ export async function submitReview(
       // unique constraint: same device, same venue, same day
       return {
         status: "error",
-        message:
-          "You have already reviewed this place today. Come back tomorrow!",
+        code: "already_reviewed",
+        message: "You have already reviewed this place today.",
       };
     }
     console.error(error);

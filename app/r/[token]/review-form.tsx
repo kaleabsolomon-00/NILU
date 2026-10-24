@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { submitReview, type ReviewState } from "./actions";
 import {
   RATING_LABELS,
@@ -12,6 +13,7 @@ import {
 type Tag = { id: number; label: string; sentiment: TagSentiment };
 
 const initialState: ReviewState = { status: "idle" };
+const GROUPS: TagSentiment[] = ["positive", "negative"];
 
 export default function ReviewForm({
   token,
@@ -22,6 +24,7 @@ export default function ReviewForm({
   venueSlug: string;
   tags: Tag[];
 }) {
+  const router = useRouter();
   const [state, formAction, pending] = useActionState(
     submitReview,
     initialState,
@@ -31,9 +34,11 @@ export default function ReviewForm({
   const [selected, setSelected] = useState<number[]>([]);
 
   const sentiment = rating > 0 ? tagSentimentForRating(rating) : null;
-  const visibleTags = sentiment
-    ? tags.filter((t) => t.sentiment === sentiment)
-    : [];
+
+  // If the server says this device already reviewed today, show the read-only view
+  useEffect(() => {
+    if (state.code === "already_reviewed") router.refresh();
+  }, [state, router]);
 
   function chooseRating(n: number) {
     // Moving between the "liked" and "improve" groups makes earlier picks invalid
@@ -73,10 +78,10 @@ export default function ReviewForm({
   }
 
   return (
-    <form action={formAction} className="mt-8 pb-32 md:pb-0">
-      {" "}
+    <form action={formAction} className="mt-8 pb-40 md:pb-0">
       <input type="hidden" name="token" value={token} />
       <input type="hidden" name="rating" value={rating} />
+
       <p className="text-center font-medium">How was your visit?</p>
       <div className="mt-4 flex justify-center gap-2">
         {[1, 2, 3, 4, 5].map((n) => (
@@ -97,37 +102,54 @@ export default function ReviewForm({
       <p className="mt-2 h-6 text-center font-medium text-brand">
         {rating > 0 ? RATING_LABELS[rating - 1] : "Tap a star"}
       </p>
-      {sentiment && (
-        <div className="mt-8">
-          <p className="text-center font-medium">
-            {sentiment === "positive"
-              ? "What did you like?"
-              : "What can we improve?"}
-          </p>
-          <div className="mt-3 flex flex-wrap justify-center gap-2">
-            {visibleTags.map((t) => (
-              <label
-                key={t.id}
-                className={`cursor-pointer rounded-full border-2 px-4 py-1.5 text-sm transition ${
-                  selected.includes(t.id)
-                    ? "border-brand bg-brand text-background"
-                    : "border-soft"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  name="tags"
-                  value={t.id}
-                  checked={selected.includes(t.id)}
-                  onChange={() => toggleTag(t.id)}
-                  className="sr-only"
-                />
-                {t.label}
-              </label>
-            ))}
-          </div>
-        </div>
-      )}
+
+      {/* Both tag groups share one grid cell, so the area is always as tall as the
+          taller group. Only the matching group is visible, so nothing below moves. */}
+      <div className="mt-8 grid">
+        {GROUPS.map((group) => {
+          const active = sentiment === group;
+          return (
+            <div
+              key={group}
+              aria-hidden={!active}
+              className={`[grid-area:1/1] transition-[opacity,visibility] duration-300 ${
+                active ? "visible opacity-100" : "invisible opacity-0"
+              }`}
+            >
+              <p className="text-center font-medium">
+                {group === "positive"
+                  ? "What did you like?"
+                  : "What can we improve?"}
+              </p>
+              <div className="mt-3 flex flex-wrap justify-center gap-2">
+                {tags
+                  .filter((t) => t.sentiment === group)
+                  .map((t) => (
+                    <label
+                      key={t.id}
+                      className={`cursor-pointer rounded-full border-2 px-4 py-1.5 text-sm transition ${
+                        selected.includes(t.id)
+                          ? "border-brand bg-brand text-background"
+                          : "border-soft"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        name="tags"
+                        value={t.id}
+                        checked={selected.includes(t.id)}
+                        onChange={() => toggleTag(t.id)}
+                        className="sr-only"
+                      />
+                      {t.label}
+                    </label>
+                  ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
       <div className="mt-8">
         <label htmlFor="comment" className="sr-only">
           Comment (optional)
@@ -146,12 +168,16 @@ export default function ReviewForm({
           Posted without your name.
         </p>
       </div>
-      {state.status === "error" && (
-        <p role="alert" className="mt-4 text-center font-medium text-red-700">
-          {state.message}
-        </p>
-      )}
-      <div className="fixed inset-x-0 bottom-0 bg-background/90 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur">
+
+      <div className="fixed inset-x-0 bottom-0 bg-background/90 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur md:static md:mt-8 md:bg-transparent md:p-0 md:backdrop-blur-none">
+        {state.status === "error" && (
+          <p
+            role="alert"
+            className="mx-auto mb-2 max-w-md text-center text-sm font-medium text-red-700"
+          >
+            {state.message}
+          </p>
+        )}
         <button
           type="submit"
           disabled={pending || rating === 0}

@@ -6,6 +6,10 @@ import ReviewForm from "./review-form";
 import { getTags } from "@/lib/queries/tags";
 import VenueCover from "@/components/venue-cover";
 import { getVenuePhotoPaths } from "@/lib/queries/photos";
+import { cookies } from "next/headers";
+import { DEVICE_COOKIE, hashDeviceId } from "@/lib/device";
+import { getTodaysReviewForDevice } from "@/lib/queries/qr";
+import ReviewedToday from "./reviewed-today";
 
 export const metadata: Metadata = {
   title: "Rate your visit | NILU",
@@ -13,6 +17,7 @@ export const metadata: Metadata = {
 };
 
 type Props = { params: Promise<{ token: string }> };
+
 async function ReviewGate({ params }: Props) {
   const { token } = await params;
   const [venue, tags] = await Promise.all([
@@ -22,7 +27,15 @@ async function ReviewGate({ params }: Props) {
 
   if (!venue) notFound();
 
-  const photoPaths = await getVenuePhotoPaths(venue.id);
+  const jar = await cookies();
+  const deviceId = jar.get(DEVICE_COOKIE)?.value;
+
+  const [photoPaths, todaysReview] = await Promise.all([
+    getVenuePhotoPaths(venue.id),
+    deviceId
+      ? getTodaysReviewForDevice(venue.id, hashDeviceId(deviceId))
+      : Promise.resolve(null),
+  ]);
 
   return (
     <>
@@ -39,10 +52,16 @@ async function ReviewGate({ params }: Props) {
           <h1 className="text-3xl font-bold text-background">{venue.name}</h1>
         </div>
       </div>
-      <ReviewForm token={token} venueSlug={venue.slug} tags={tags} />
+
+      {todaysReview ? (
+        <ReviewedToday review={todaysReview} venueSlug={venue.slug} />
+      ) : (
+        <ReviewForm token={token} venueSlug={venue.slug} tags={tags} />
+      )}
     </>
   );
 }
+
 export default function ReviewPage({ params }: Props) {
   return (
     <main className="mx-auto max-w-md p-6 md:my-12 md:rounded-3xl md:border-2 md:border-soft md:p-10">
