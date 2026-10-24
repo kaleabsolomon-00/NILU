@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { updateDetails, type DetailsState } from "./actions";
+import { Button } from "@/components/button";
 
 type Initial = {
   description: string;
@@ -106,13 +107,9 @@ export default function DetailsForm({
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-full bg-brand px-8 py-3 font-semibold text-background disabled:opacity-40"
-      >
+      <Button type="submit" size="lg" disabled={pending}>
         {pending ? "Saving..." : "Save changes"}
-      </button>
+      </Button>
     </form>
   );
 }

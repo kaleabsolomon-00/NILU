@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { login, type LoginState } from "./actions";
+import { Button } from "@/components/button";
 
 const initialState: LoginState = {};
 
@@ -47,13 +48,9 @@ export default function LoginForm() {
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="w-full rounded-full bg-brand py-3 text-lg font-semibold text-background disabled:opacity-40"
-      >
+      <Button type="submit" size="lg" full disabled={pending}>
         {pending ? "Signing in..." : "Sign in"}
-      </button>
+      </Button>
     </form>
   );
 }

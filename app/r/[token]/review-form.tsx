@@ -9,6 +9,7 @@ import {
   tagSentimentForRating,
   type TagSentiment,
 } from "@/lib/rating";
+import { Button } from "@/components/button";
 
 type Tag = { id: number; label: string; sentiment: TagSentiment };
 
@@ -178,13 +179,16 @@ export default function ReviewForm({
             {state.message}
           </p>
         )}
-        <button
-          type="submit"
-          disabled={pending || rating === 0}
-          className="mx-auto block w-full max-w-md rounded-full bg-brand py-3 text-lg font-semibold text-background disabled:opacity-40"
-        >
-          {pending ? "Submitting..." : "Submit review"}
-        </button>
+        <div className="mx-auto max-w-md">
+          <Button
+            type="submit"
+            size="lg"
+            full
+            disabled={pending || rating === 0}
+          >
+            {pending ? "Submitting..." : "Submit review"}
+          </Button>
+        </div>
       </div>
     </form>
   );

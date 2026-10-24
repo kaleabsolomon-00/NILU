@@ -8,6 +8,8 @@ import { photoUrl } from "@/lib/photo-url";
 import { isUuid } from "@/lib/uuid";
 import DetailsForm from "./details-form";
 import PhotoManager from "./photo-manager";
+import { ButtonLink } from "@/components/button";
+import { ArrowLeftIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Edit your place | NILU",
@@ -51,12 +53,9 @@ async function EditContent({ params }: Props) {
 
   return (
     <>
-      <Link
-        href="/dashboard"
-        className="text-sm font-medium text-brand underline"
-      >
-        Back to dashboard
-      </Link>
+      <ButtonLink href="/dashboard" variant="ghost" size="sm">
+        <ArrowLeftIcon /> Back to dashboard
+      </ButtonLink>
       <h1 className="mt-2 text-3xl font-bold text-brand">{venue.name}</h1>
 
       <section className="mt-8">

@@ -1,5 +1,6 @@
-import Link from "next/link";
 import Form from "next/form";
+import { Button, ButtonLink } from "@/components/button";
+import { ArrowRightIcon, SearchIcon } from "@/components/icons";
 
 export default function Home() {
   return (
@@ -19,17 +20,14 @@ export default function Home() {
           maxLength={60}
           className="min-w-0 flex-1 rounded-full border-2 border-soft bg-transparent px-5 py-3 focus:border-brand focus:outline-none"
         />
-        <button
-          type="submit"
-          className="rounded-full bg-brand px-6 py-3 font-semibold text-background"
-        >
-          Search
-        </button>
+        <Button type="submit" size="lg">
+          <SearchIcon /> Search
+        </Button>
       </Form>
 
-      <Link href="/venues" className="mt-6 font-medium text-brand underline">
-        or browse all places
-      </Link>
+      <ButtonLink href="/venues" variant="secondary" size="lg" className="mt-6">
+        Browse all places <ArrowRightIcon />
+      </ButtonLink>
     </main>
   );
 }

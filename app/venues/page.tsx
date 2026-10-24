@@ -5,6 +5,8 @@ import { getVenueCards } from "@/lib/queries/discover";
 import { getTags } from "@/lib/queries/tags";
 import { CATEGORIES, categoryLabel } from "@/lib/categories";
 import VenueCover from "@/components/venue-cover";
+import { Button } from "@/components/button";
+import { SearchIcon } from "@/components/icons";
 
 type Filters = { category?: string; tag?: string; q?: string };
 type Props = {
@@ -70,12 +72,9 @@ async function Discovery({ searchParams }: Props) {
           maxLength={60}
           className="min-w-0 flex-1 rounded-full border-2 border-soft bg-transparent px-4 py-2 focus:border-brand focus:outline-none"
         />
-        <button
-          type="submit"
-          className="rounded-full bg-brand px-5 py-2 font-semibold text-background"
-        >
-          Search
-        </button>
+        <Button type="submit">
+          <SearchIcon /> Search
+        </Button>
       </Form>
 
       <div className="mt-4 space-y-3">

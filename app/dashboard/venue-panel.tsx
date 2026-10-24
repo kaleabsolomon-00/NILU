@@ -3,6 +3,8 @@ import { getVenueRating, getVenueReviews } from "@/lib/queries/reviews";
 import { getVenueTagCounts, type TagCount } from "@/lib/queries/dashboard";
 import { getQrTokenForOwner } from "@/lib/queries/qr";
 import { categoryLabel } from "@/lib/categories";
+import { ButtonLink, buttonClasses } from "@/components/button";
+import { PencilIcon, ExternalIcon, DownloadIcon } from "@/components/icons";
 
 type Venue = { id: string; slug: string; name: string; category: string };
 
@@ -58,13 +60,17 @@ export default async function VenuePanel({
           <h2 className="text-2xl font-bold text-brand">{venue.name}</h2>
           <p className="text-sm text-ink/60">{categoryLabel(venue.category)}</p>
         </div>
-        <div className="flex gap-4 text-sm font-medium text-brand">
-          <Link href={`/dashboard/venues/${venue.id}`} className="underline">
-            Edit details &amp; photos
-          </Link>
-          <Link href={`/v/${venue.slug}`} className="underline">
-            View public page
-          </Link>
+        <div className="flex flex-wrap gap-2">
+          <ButtonLink
+            href={`/dashboard/venues/${venue.id}`}
+            variant="secondary"
+            size="sm"
+          >
+            <PencilIcon /> Edit details &amp; photos
+          </ButtonLink>
+          <ButtonLink href={`/v/${venue.slug}`} variant="ghost" size="sm">
+            View public page <ExternalIcon />
+          </ButtonLink>
         </div>
       </div>
 
@@ -159,9 +165,9 @@ export default async function VenuePanel({
             <a
               href={`/api/qr/${qrToken}`}
               download={`nilu-qr-${venue.slug}.png`}
-              className="mt-3 inline-block rounded-full bg-brand px-5 py-2 text-sm font-semibold text-background"
+              className={`${buttonClasses({ size: "sm" })} mt-3`}
             >
-              Download QR code
+              <DownloadIcon /> Download QR code
             </a>
           </div>
         </div>
