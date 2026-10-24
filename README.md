@@ -6,6 +6,10 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+This project requires Node.js 22 or later because the current Supabase client no
+longer supports Node.js 20. Check your version with `node --version`, then
+install Node.js 22+ before running the commands below.
+
 First, run the development server:
 
 ```bash
