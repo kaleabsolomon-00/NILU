@@ -6,6 +6,7 @@ import {
   PencilIcon,
   SearchIcon,
 } from "@/components/icons";
+import { Logo, LogoMark } from "@/components/logo";
 
 export const metadata: Metadata = {
   title: "Style guide | NILU",
@@ -57,6 +58,28 @@ export default function StyleGuide() {
       <section className="space-y-3">
         <h2 className="font-semibold">Disabled</h2>
         <Button disabled>Disabled</Button>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-xl font-bold">Logo</h2>
+        <div className="flex flex-wrap items-center gap-8">
+          <Logo className="h-10 w-auto text-brand" />
+          <LogoMark className="h-10 w-10 text-brand" />
+          <div className="rounded-2xl bg-brand p-4">
+            <Logo className="h-10 w-auto text-background" />
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-xl font-bold">Typography</h2>
+        <p className="font-display text-4xl font-bold">
+          Places worth your time
+        </p>
+        <p className="font-display text-2xl italic">your time &amp; money.</p>
+        <p>Real reviews from people who were really there.</p>
+        <p className="text-2xl font-medium">★ 4.8 (1,240) · 0123456789</p>
+        <p>ሰላም! እንኳን ደህና መጡ። (Amharic test)</p>
       </section>
     </main>
   );
