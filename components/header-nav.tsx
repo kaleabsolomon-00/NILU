@@ -11,8 +11,14 @@ export default function HeaderNav() {
 
   return (
     <nav aria-label="Main" className="flex items-center gap-1 sm:gap-2">
-      <ButtonLink href="/venues" variant="ghost" size="sm">
-        Explore
+      <ButtonLink
+        href="https://t.me/Kal_de_blues"
+        variant="ghost"
+        size="sm"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Contact me
       </ButtonLink>
       <ButtonLink href="/login" variant="secondary" size="sm">
         <span className="sm:hidden">Login</span>
