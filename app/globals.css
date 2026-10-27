@@ -34,6 +34,29 @@ body {
   font-variant-numeric: lining-nums;
 }
 
+html {
+  scrollbar-color: var(--color-brand) var(--color-soft);
+  scrollbar-width: thin;
+}
+
+html::-webkit-scrollbar {
+  width: 0.7rem;
+}
+
+html::-webkit-scrollbar-track {
+  background: var(--color-soft);
+}
+
+html::-webkit-scrollbar-thumb {
+  border: 0.15rem solid var(--color-soft);
+  border-radius: 999px;
+  background: var(--color-brand);
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: var(--color-night);
+}
+
 h1,
 h2,
 h3,
