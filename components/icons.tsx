@@ -23,8 +23,8 @@ function Svg({
   );
 }
 
-export const ArrowRightIcon = () => (
-  <Svg>
+export const ArrowRightIcon = ({ className }: { className?: string }) => (
+  <Svg className={className}>
     <path d="M5 12h14M13 6l6 6-6 6" />
   </Svg>
 );

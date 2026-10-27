@@ -7,6 +7,8 @@
   --color-brand: #4f5b2a; /* olive: buttons, headings, selected chips */
   --color-accent: #b8892d; /* mustard: stars, highlights */
   --color-soft: #d8c9a8; /* tan: borders, inactive elements */
+  --color-night: #161a0e; /* near-black olive: dark sections and footer */
+  --color-sun: #e3b964; /* light mustard: accent text on dark backgrounds */
 }
 
 @theme inline {
