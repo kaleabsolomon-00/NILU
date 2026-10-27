@@ -66,7 +66,7 @@ export default function StyleGuide() {
           <Logo className="h-10 w-auto text-brand" />
           <LogoMark className="h-10 w-10 text-brand" />
           <div className="rounded-2xl bg-brand p-4">
-            <Logo className="h-10 w-auto text-background" />
+            <Logo className="h-10 w-auto" variant="cream" />
           </div>
         </div>
       </section>

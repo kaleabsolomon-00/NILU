@@ -28,7 +28,7 @@ export default function SiteFooter() {
       {/* The giant wordmark, cropped by the bottom edge */}
       <div aria-hidden="true" className="mt-6 px-4 md:px-8">
         <div className="aspect-[358/68] overflow-hidden">
-          <Logo className="h-auto w-full text-brand" />
+          <Logo className="h-auto w-full" variant="cream" />
         </div>
       </div>
     </footer>

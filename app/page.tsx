@@ -156,9 +156,6 @@ function Hero() {
           </ButtonLink>
 
           <div className="mt-10 flex max-w-2xl flex-wrap items-center justify-center gap-2">
-            <span className="mr-1 w-full text-xs font-bold uppercase tracking-[0.22em] text-background/70 sm:w-auto">
-              Or start with a vibe
-            </span>
             {VIBES.map((v) => (
               <Link
                 key={v.slug}
@@ -284,7 +281,7 @@ function Trust() {
 function Owners() {
   return (
     <section className="relative mx-3 mt-3 overflow-hidden rounded-[2rem] bg-brand p-7 text-background md:mx-5 md:mt-5 md:p-14">
-      <LogoMark className="pointer-events-none absolute -right-10 -top-10 h-72 w-72 text-background/10 md:h-96 md:w-96" />
+      <LogoMark className="pointer-events-none absolute -right-10 top-1/2 h-72 w-72 -translate-y-1/2 brightness-0 invert opacity-10 md:h-96 md:w-96" />
       <div className="relative max-w-2xl">
         <Eyebrow light>For venue owners</Eyebrow>
         <h2 className="mt-4 text-balance font-display text-4xl font-bold md:text-6xl">
