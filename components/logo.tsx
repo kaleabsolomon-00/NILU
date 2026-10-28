@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image, { type ImageProps } from "next/image";
 
 type LogoVariant = "brand" | "cream";
 
@@ -23,9 +23,11 @@ export function LogoMark({ className = "h-10 w-10" }: { className?: string }) {
 export function Logo({
   className = "h-10 w-auto",
   variant = "brand",
+  loading,
 }: {
   className?: string;
   variant?: LogoVariant;
+  loading?: ImageProps["loading"];
 }) {
   return (
     <Image
@@ -34,6 +36,7 @@ export function Logo({
       width={370}
       height={124}
       className={className}
+      loading={loading}
     />
   );
 }

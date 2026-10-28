@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import Form from "next/form";
 import { getVenueCards } from "@/lib/queries/discover";
@@ -11,6 +12,12 @@ import { SearchIcon } from "@/components/icons";
 type Filters = { category?: string; tag?: string; q?: string };
 type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export const metadata: Metadata = {
+  title: "Explore places | NILU",
+  description:
+    "Find places worth your time, ranked by people who were really there.",
 };
 
 function first(value: string | string[] | undefined) {

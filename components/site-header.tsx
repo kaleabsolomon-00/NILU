@@ -12,7 +12,7 @@ export default function SiteHeader() {
           aria-label="NILU home"
           className="rounded-lg text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
         >
-          <Logo className="h-10 w-auto" />
+          <Logo className="h-10 w-auto" loading="eager" />
         </Link>
         <Suspense fallback={null}>
           <HeaderNav />
