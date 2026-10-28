@@ -1,18 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+const emptySubscribe = () => () => {};
+
+function getLocalTime(iso: string) {
+  return new Date(iso).toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
 
 export function LocalTime({ iso }: { iso: string }) {
-  const [text, setText] = useState("");
-
-  useEffect(() => {
-    setText(
-      new Date(iso).toLocaleTimeString([], {
-        hour: "numeric",
-        minute: "2-digit",
-      }),
-    );
-  }, [iso]);
+  const text = useSyncExternalStore(
+    emptySubscribe,
+    () => getLocalTime(iso),
+    () => "",
+  );
 
   return <span>{text ? `Today at ${text}` : ""}</span>;
 }

@@ -354,7 +354,7 @@ function Faq() {
         <FaqItem n="01" q="How do I know a review is real?">
           Reviews can only be left by scanning the QR code at the venue, and
           each device can review a place once a day. We use a small cookie on
-          your device to enforce that. It doesn't make cheating impossible, but
+          your device to enforce that. It doesn&apos;t make cheating impossible, but
           it makes it much harder than on open review sites.
         </FaqItem>
         <FaqItem n="02" q="Do I need an account to leave a review?">
