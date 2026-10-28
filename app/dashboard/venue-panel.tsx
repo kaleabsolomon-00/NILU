@@ -56,8 +56,8 @@ export default async function VenuePanel({
   const loved = tagCounts.filter((t) => t.sentiment === "positive").slice(0, 5);
 
   return (
-    <section className="mt-8 overflow-hidden rounded-[2rem] border-2 border-soft/70 bg-white/35 shadow-xl shadow-night/5">
-      <div className="border-b-2 border-soft/70 bg-white/30 p-6 md:p-8">
+    <section className="mt-8 overflow-hidden rounded-[2rem] border-0 bg-white/35 shadow-none md:border-2 md:border-soft/70 md:shadow-xl md:shadow-night/5">
+      <div className="border-b-0 bg-white/30 p-4 md:border-b-2 md:border-soft/70 md:p-8">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div className="flex items-start gap-4">
             <div className="rounded-2xl bg-brand p-3 shadow-lg shadow-brand/15">
@@ -90,17 +90,17 @@ export default async function VenuePanel({
         </div>
       </div>
 
-      <div className="p-6 md:p-8">
+      <div className="p-3 md:p-8">
         <div className="grid gap-4 sm:grid-cols-[1.25fr_0.75fr]">
-          <div className="rounded-3xl bg-brand p-6 text-background">
+          <div className="rounded-3xl bg-brand p-5 text-background md:p-6">
             <p className="text-sm font-bold uppercase tracking-[0.16em] text-background/60">
               Current signal
             </p>
-            <div className="mt-5 flex items-end justify-between gap-4">
-              <p className="font-display text-5xl font-bold leading-none">
+            <div className="mt-5 flex items-center justify-between gap-4">
+              <p className="flex items-center gap-2 font-display text-5xl font-bold leading-none">
                 {rating.count > 0 ? (
                   <>
-                    <span className="text-sun">★</span>{" "}
+                    <span className="text-sun">★</span>
                     {rating.average.toFixed(1)}
                   </>
                 ) : (
@@ -112,7 +112,7 @@ export default async function VenuePanel({
               </p>
             </div>
           </div>
-          <div className="rounded-3xl border-2 border-soft/70 bg-background/45 p-6">
+          <div className="rounded-3xl border-0 bg-background/45 p-5 md:border-2 md:border-soft/70 md:p-6">
             <p className="text-sm font-bold uppercase tracking-[0.16em] text-ink/50">
               Reviews received
             </p>
@@ -126,7 +126,7 @@ export default async function VenuePanel({
           </div>
         </div>
 
-        <div className="mt-12 grid gap-8 border-t-2 border-soft/60 pt-8 md:grid-cols-2">
+        <div className="mt-12 grid gap-8 border-t-0 pt-0 md:grid-cols-2 md:border-t-2 md:border-soft/60 md:pt-8">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.16em] text-brand/60">
               Listen closely
@@ -147,7 +147,7 @@ export default async function VenuePanel({
           </div>
         </div>
 
-        <details className="group mt-12 border-t-2 border-soft/60 pt-8">
+        <details className="group mt-12 border-t-0 pt-0 md:border-t-2 md:border-soft/60 md:pt-8">
           <summary className="flex cursor-pointer list-none items-end justify-between gap-4 [&::-webkit-details-marker]:hidden">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-brand/60">
@@ -224,7 +224,7 @@ export default async function VenuePanel({
         </details>
 
         {qrToken && (
-          <div className="relative mt-12 flex flex-wrap items-center gap-6 overflow-hidden rounded-3xl bg-night p-5 text-background md:p-6">
+          <div className="relative mt-12 flex flex-col items-center gap-6 overflow-hidden rounded-3xl bg-night p-5 text-center text-background md:flex-row md:text-left md:p-6">
             <div className="absolute -right-12 -top-16 h-40 w-40 rounded-full border border-background/10" />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -234,7 +234,7 @@ export default async function VenuePanel({
               height={160}
               className="rounded-xl border-4 border-background bg-white"
             />
-            <div className="relative max-w-sm">
+            <div className="relative max-w-sm text-center md:text-left">
               <h3 className="mt-2 font-display text-xl font-bold text-background">
                 Your QR code
               </h3>
