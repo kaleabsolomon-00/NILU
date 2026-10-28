@@ -115,8 +115,8 @@ function SealBadge() {
 
 function Hero() {
   return (
-    <section className="px-3 pt-3 md:px-5 md:pt-4">
-      <div className="relative isolate overflow-hidden rounded-[2rem] md:rounded-[2.5rem]">
+    <section className="px-1.5 pt-1.5 md:px-3 md:pt-2">
+      <div className="relative isolate overflow-hidden rounded-[1.25rem] md:rounded-[1.5rem]">
         <Image
           src={hero}
           alt=""
@@ -133,8 +133,8 @@ function Hero() {
 
         <SealBadge />
 
-        <div className="relative flex min-h-[calc(100svh-6.5rem)] flex-col items-center justify-center px-5 py-20 text-center md:px-10">
-          <h1 className="max-w-5xl text-balance font-display text-4xl font-bold leading-[1.05] tracking-tight text-background [text-shadow:0_2px_30px_rgb(0_0_0/0.35)] sm:text-6xl md:text-7xl lg:text-8xl">
+        <div className="relative flex min-h-[calc(100svh-5rem)] flex-col items-center justify-center px-5 py-12 text-center md:px-10 md:py-14">
+          <h1 className="max-w-5xl text-balance font-display text-3xl font-bold leading-[1.02] tracking-tight text-background [text-shadow:0_2px_30px_rgb(0_0_0/0.35)] sm:text-5xl md:text-6xl lg:text-7xl">
             Discover places worth
             <span className="mt-1 block font-medium italic text-sun">
               your time &amp; money.
