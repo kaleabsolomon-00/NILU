@@ -29,10 +29,10 @@ function buildHref(current: Filters, change: Partial<Filters>) {
 }
 
 const chip = (active: boolean) =>
-  `rounded-full border-2 px-4 py-1.5 text-sm transition ${
+  `rounded-full border-2 px-4 py-1.5 text-sm font-medium transition ${
     active
       ? "border-brand bg-brand text-background"
-      : "border-soft hover:border-brand"
+      : "border-soft/80 bg-background/40 hover:border-brand hover:bg-white/40"
   }`;
 
 async function Discovery({ searchParams }: Props) {
@@ -59,108 +59,140 @@ async function Discovery({ searchParams }: Props) {
 
   return (
     <>
-      <Form action="/venues" className="mt-6 flex gap-2">
-        {category && <input type="hidden" name="category" value={category} />}
-        {tag && <input type="hidden" name="tag" value={tag} />}
-        <input
-          key={q ?? ""}
-          type="search"
-          name="q"
-          defaultValue={q}
-          placeholder="Search by name"
-          aria-label="Search places by name"
-          maxLength={60}
-          className="min-w-0 flex-1 rounded-full border-2 border-soft bg-transparent px-4 py-2 focus:border-brand focus:outline-none"
-        />
-        <Button type="submit">
-          <SearchIcon /> Search
-        </Button>
-      </Form>
+      <div className="mt-4 rounded-[2rem] border-2 border-soft/70 bg-white/25 p-5 md:p-6">
+        <Form action="/venues" className="flex gap-2">
+          {category && <input type="hidden" name="category" value={category} />}
+          {tag && <input type="hidden" name="tag" value={tag} />}
+          <label htmlFor="venue-search" className="sr-only">
+            Search places by name
+          </label>
+          <input
+            id="venue-search"
+            key={q ?? ""}
+            type="search"
+            name="q"
+            defaultValue={q}
+            placeholder="Search by name"
+            maxLength={60}
+            className="min-w-0 flex-1 rounded-full border-2 border-soft/80 bg-background/55 px-5 py-2.5 text-base focus:border-brand focus:bg-background focus:outline-none"
+          />
+          <Button type="submit" size="md">
+            <SearchIcon /> <span className="hidden sm:inline">Search</span>
+          </Button>
+        </Form>
 
-      <div className="mt-4 space-y-3">
-        <div className="flex flex-wrap gap-2">
-          <Link
-            href={buildHref(current, { category: undefined })}
-            scroll={false}
-            className={chip(!category)}
-          >
-            All
-          </Link>
-          {CATEGORIES.map((c) => (
-            <Link
-              key={c.value}
-              href={buildHref(current, {
-                category: category === c.value ? undefined : c.value,
-              })}
-              scroll={false}
-              className={chip(category === c.value)}
-            >
-              {c.label}
-            </Link>
-          ))}
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {tags.map((t) => (
-            <Link
-              key={t.id}
-              href={buildHref(current, {
-                tag: tag === t.slug ? undefined : t.slug,
-              })}
-              scroll={false}
-              className={chip(tag === t.slug)}
-            >
-              {t.label}
-            </Link>
-          ))}
+        <div className="mt-5 space-y-4">
+          <div>
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-brand/60">
+              Browse by place
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href={buildHref(current, { category: undefined })}
+                scroll={false}
+                className={chip(!category)}
+              >
+                All
+              </Link>
+              {CATEGORIES.map((c) => (
+                <Link
+                  key={c.value}
+                  href={buildHref(current, {
+                    category: category === c.value ? undefined : c.value,
+                  })}
+                  scroll={false}
+                  className={chip(category === c.value)}
+                >
+                  {c.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-brand/60">
+              Browse by feeling
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {tags.map((t) => (
+                <Link
+                  key={t.id}
+                  href={buildHref(current, {
+                    tag: tag === t.slug ? undefined : t.slug,
+                  })}
+                  scroll={false}
+                  className={chip(tag === t.slug)}
+                >
+                  {t.label}
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
-      <p className="mt-6 text-sm text-ink/60">
-        {venues.length} place{venues.length === 1 ? "" : "s"}
-        {q ? ` matching “${q}”` : ""}
-        {q && (
-          <>
-            {" · "}
-            <Link
-              href={buildHref(current, { q: undefined })}
-              scroll={false}
-              className="font-medium text-brand underline"
-            >
-              Clear search
-            </Link>
-          </>
+      <div className="mt-8 flex items-center justify-between gap-4">
+        <p className="text-sm text-ink/60">
+          {venues.length} place{venues.length === 1 ? "" : "s"}
+          {q ? ` matching “${q}”` : ""}
+          {q && (
+            <>
+              {" · "}
+              <Link
+                href={buildHref(current, { q: undefined })}
+                scroll={false}
+                className="font-medium text-brand underline"
+              >
+                Clear search
+              </Link>
+            </>
+          )}
+        </p>
+        {(category || tag) && (
+          <Link
+            href="/venues"
+            scroll={false}
+            className="text-sm font-bold text-brand underline decoration-brand/30 underline-offset-4 hover:decoration-brand"
+          >
+            Reset filters
+          </Link>
         )}
-      </p>
+      </div>
 
       {venues.length === 0 ? (
-        <p className="mt-4">
-          No places match {q ? `“${q}”` : "these filters"} yet.{" "}
-          <Link href="/venues" className="font-medium text-brand underline">
-            Clear filters
-          </Link>
-        </p>
+        <div className="mt-4 rounded-3xl border-2 border-dashed border-soft p-8 text-center">
+          <p className="font-display text-2xl font-bold text-brand">
+            Nothing here yet.
+          </p>
+          <p className="mt-1 text-ink/60">
+            No places match {q ? `“${q}”` : "these filters"} yet.{" "}
+            <Link href="/venues" className="font-medium text-brand underline">
+              Clear filters
+            </Link>
+          </p>
+        </div>
       ) : (
-        <ul className="mt-4 grid gap-4 md:grid-cols-2">
+        <ul className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {venues.map((v) => (
             <li key={v.id}>
               <Link
                 href={`/v/${v.slug}`}
-                className="block h-full overflow-hidden rounded-2xl border-2 border-soft transition hover:border-brand"
+                className="group block h-full overflow-hidden rounded-[1.5rem] border-2 border-soft/70 bg-white/25 transition duration-200 hover:-translate-y-1 hover:border-brand hover:bg-white/45 motion-reduce:transform-none"
               >
-                <div className="relative aspect-[16/9]">
+                <div className="relative aspect-[4/3] overflow-hidden">
                   <VenueCover
                     path={v.cover_path}
                     name={v.name}
-                    sizes="(min-width: 768px) 400px, 100vw"
+                    sizes="(min-width: 1024px) 370px, (min-width: 640px) 45vw, 100vw"
                   />
+                  <div className="absolute inset-0 bg-linear-to-t from-night/35 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                 </div>
-                <div className="p-4">
+                <div className="p-5">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <h2 className="text-lg font-semibold text-brand">
+                      <h2 className="font-display text-2xl font-bold leading-tight text-brand">
                         {v.name}
                       </h2>
-                      <p className="text-sm text-ink/60">
+                      <p className="mt-1 text-sm text-ink/60">
                         {categoryLabel(v.category)}
                         {v.area ? ` · ${v.area}` : ""}
                       </p>
@@ -173,11 +205,13 @@ async function Discovery({ searchParams }: Props) {
                             {Number(v.average_rating).toFixed(1)}
                           </span>{" "}
                           <span className="text-sm text-ink/60">
-                            ({v.review_count})
+                            · {v.review_count}
                           </span>
                         </>
                       ) : (
-                        <span className="text-sm text-ink/60">New</span>
+                        <span className="rounded-full bg-soft/55 px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-brand">
+                          New
+                        </span>
                       )}
                     </p>
                   </div>
@@ -186,7 +220,7 @@ async function Discovery({ searchParams }: Props) {
                       {v.tag_slugs.slice(0, 3).map((slug) => (
                         <span
                           key={slug}
-                          className="rounded-full border-2 border-soft px-2 py-0.5 text-xs"
+                          className="rounded-full border-2 border-soft/80 px-2.5 py-0.5 text-xs"
                         >
                           {tagLabels.get(slug) ?? slug}
                         </span>
@@ -205,9 +239,7 @@ async function Discovery({ searchParams }: Props) {
 
 export default function VenuesPage({ searchParams }: Props) {
   return (
-    <main className="mx-auto max-w-4xl p-6">
-      <h1 className="text-3xl font-bold text-brand">Explore</h1>
-      <p className="mt-1 text-ink/70">Find your next destination.</p>
+    <main className="mx-auto max-w-6xl px-4 py-5 md:px-6 md:py-7">
       <Suspense fallback={<p className="mt-6">Loading places...</p>}>
         <Discovery searchParams={searchParams} />
       </Suspense>
