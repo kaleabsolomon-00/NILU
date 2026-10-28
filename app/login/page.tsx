@@ -9,14 +9,14 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <main className="min-h-[calc(100svh-4rem)] px-3 py-3 md:px-5 md:py-5">
-      <div className="mx-auto grid min-h-[calc(100svh-6.5rem)] max-w-6xl overflow-hidden rounded-[2rem] bg-night shadow-2xl shadow-night/10 md:grid-cols-[1.05fr_0.95fr] md:rounded-[2.5rem]">
-        <section className="relative isolate flex min-h-[28rem] flex-col justify-between overflow-hidden p-7 text-background md:min-h-0 md:p-12 lg:p-16">
+    <main className="min-h-[calc(100svh-4rem)] px-0 py-0 md:px-5 md:py-3">
+      <div className="mx-auto grid min-h-[calc(100svh-6rem)] max-w-6xl overflow-hidden bg-background md:grid-cols-[1.05fr_0.95fr] md:rounded-[2.5rem] md:bg-night md:shadow-2xl md:shadow-night/10">
+        <section className="relative isolate hidden min-h-[28rem] flex-col justify-between overflow-hidden p-7 text-background md:flex md:min-h-0 md:p-12 lg:p-16">
           <div className="absolute -right-24 -top-24 -z-10 h-80 w-80 rounded-full border border-background/15 md:h-96 md:w-96" />
           <div className="absolute -bottom-36 -left-24 -z-10 h-80 w-80 rounded-full bg-brand/40 blur-3xl" />
           <Logo variant="cream" className="h-9 w-auto self-start sm:h-10" />
 
-          <div className="relative mt-20 max-w-xl md:mt-0">
+          <div className="relative mt-16 max-w-xl md:mt-0">
             <p className="mb-5 text-sm font-bold uppercase tracking-[0.22em] text-sun">
               For venue owners
             </p>
@@ -30,7 +30,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <div className="relative mt-16 flex items-end justify-between gap-6 md:mt-0">
+          <div className="relative mt-12 flex items-end justify-between gap-6 md:mt-0">
             <div className="flex items-center gap-3">
               <LogoMark className="h-10 w-10 brightness-0 invert opacity-80" />
               <span className="max-w-32 text-sm leading-tight text-background/60">
@@ -43,9 +43,9 @@ export default function LoginPage() {
           </div>
         </section>
 
-        <section className="flex flex-col justify-center bg-background p-7 sm:p-12 lg:p-16">
+        <section className="flex flex-col justify-center bg-background p-7 sm:p-10 lg:p-12">
           <div className="mx-auto w-full max-w-md">
-            <div className="mt-6 sm:mt-8">
+            <div className="mt-3 sm:mt-4">
               <p className="text-sm font-bold uppercase tracking-[0.2em] text-brand/70">
                 Welcome back
               </p>
@@ -57,7 +57,7 @@ export default function LoginPage() {
               </p>
             </div>
             <LoginForm />
-            <p className="mt-8 text-center text-sm text-ink/50">
+            <p className="mt-5 text-center text-sm text-ink/50">
               Need an owner account?{" "}
               <a
                 href="https://t.me/Kal_de_blues"

@@ -10,6 +10,7 @@ import { cookies } from "next/headers";
 import { DEVICE_COOKIE, hashDeviceId } from "@/lib/device";
 import { getTodaysReviewForDevice } from "@/lib/queries/qr";
 import ReviewedToday from "./reviewed-today";
+import { LogoMark } from "@/components/logo";
 
 export const metadata: Metadata = {
   title: "Rate your visit | NILU",
@@ -39,7 +40,7 @@ async function ReviewGate({ params }: Props) {
 
   return (
     <>
-      <div className="relative aspect-[2/1] overflow-hidden rounded-3xl md:aspect-[16/9]">
+      <div className="relative aspect-[5/3] overflow-hidden rounded-[2rem] md:aspect-[16/9]">
         <VenueCover
           path={photoPaths[0] ?? null}
           name={venue.name}
@@ -47,9 +48,14 @@ async function ReviewGate({ params }: Props) {
           hero
         />
         <div className="absolute inset-0 bg-linear-to-t from-ink/80 via-transparent to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 p-5">
-          <p className="text-sm text-background/80">You are rating</p>
-          <h1 className="text-3xl font-bold text-background">{venue.name}</h1>
+        <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-sun">
+            <LogoMark className="h-5 w-5 brightness-0 invert" />
+            Your visit
+          </div>
+          <h1 className="mt-2 font-display text-4xl font-bold leading-none text-background">
+            {venue.name}
+          </h1>
         </div>
       </div>
 
@@ -64,8 +70,7 @@ async function ReviewGate({ params }: Props) {
 
 export default function ReviewPage({ params }: Props) {
   return (
-    <main className="mx-auto max-w-md p-6 md:my-12 md:rounded-3xl md:border-2 md:border-soft md:p-10">
-      {" "}
+    <main className="mx-auto max-w-lg px-4 py-4 md:my-8 md:px-8 md:py-8">
       <Suspense fallback={<p>Loading...</p>}>
         <ReviewGate params={params} />
       </Suspense>

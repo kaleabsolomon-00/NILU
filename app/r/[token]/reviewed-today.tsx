@@ -50,12 +50,12 @@ export default function ReviewedToday({
 
   return (
     <div className="mt-6 space-y-4">
-      <div className="rounded-2xl border-2 border-accent/50 bg-accent/10 p-4">
+      <div className="rounded-[2rem] border-2 border-accent/50 bg-accent/10 p-5">
         <div className="flex gap-3">
           <ClockIcon />
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <p className="font-semibold text-brand">
+              <p className="font-display text-xl font-bold text-brand">
                 You have already rated this place today
               </p>
               <span className="rounded-full bg-accent/30 px-2 py-0.5 text-xs font-semibold tracking-wide text-ink">
@@ -70,14 +70,14 @@ export default function ReviewedToday({
         </div>
       </div>
 
-      <div className="rounded-2xl border-2 border-soft p-4">
+      <div className="rounded-[2rem] border-2 border-soft/70 bg-white/25 p-5">
         <div className="flex items-center justify-between text-sm text-ink/60">
           <span>Your rating today</span>
           <LocalTime iso={review.created_at} />
         </div>
 
         <p
-          className="mt-3 text-center text-4xl"
+          className="mt-4 text-center text-4xl"
           aria-label={`${review.rating} out of 5 stars`}
         >
           <span className="text-accent">{"★".repeat(review.rating)}</span>
@@ -97,7 +97,7 @@ export default function ReviewedToday({
           </div>
         )}
 
-        <p className="mt-3 rounded-xl bg-soft/30 p-3 text-center text-sm italic text-ink/70">
+        <p className="mt-4 rounded-2xl bg-soft/30 p-3 text-center text-sm italic text-ink/70">
           {review.comment
             ? `\u201C${review.comment}\u201D`
             : "No comment left."}
